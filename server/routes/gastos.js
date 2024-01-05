@@ -1,7 +1,5 @@
 import express from 'express';
 import Gasto from '../models/gastos.js';
-
-import { io } from '../../server.js';
 import { openingHours } from '../middleware/middleware.js';
 const router = express.Router();
 
@@ -19,7 +17,6 @@ router.post('/add-gasto', openingHours, (req, res) => {
   newGasto
     .save()
     .then((gastoSaved) => {
-      io.emit('cGasto', gastoSaved);
       res.json(gastoSaved);
     })
     .catch((error) => {

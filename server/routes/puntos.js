@@ -1,6 +1,5 @@
 import express from 'express';
 import modelPuntos from '../models/puntos.js';
-import { io } from '../../server.js';
 const router = express.Router();
 
 router.post('/update-point-value', (req, res) => {
@@ -10,7 +9,6 @@ router.post('/update-point-value', (req, res) => {
     .findOneAndUpdate({}, { score, valor }, { new: true, upsert: true })
     // "new: true" devuelve el documento actualizado, "upsert: true" crea uno si no existe
     .then((updatedValue) => {
-      io.emit('cPuntos', updatedValue);
       res.json(updatedValue);
     })
     .catch((error) => {

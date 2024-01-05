@@ -1,6 +1,5 @@
 import express from 'express';
 import codFactura from '../models/codigoFactura.js';
-import { io } from '../../server.js';
 
 const router = express.Router();
 
@@ -64,7 +63,6 @@ router.put('/update-next-cod', async (req, res) => {
         await updatedCod.save();
       }
 
-      io.emit('change-cod', updatedCod.codActual);
       res.json(updatedCod);
     } else {
       return res.status(404).json({ mensaje: 'Código de factura no encontrado' });

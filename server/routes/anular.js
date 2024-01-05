@@ -1,6 +1,5 @@
 import express from 'express';
 import Anular from '../models/anular.js';
-import { io } from '../../server.js';
 import { openingHours } from '../middleware/middleware.js';
 const router = express.Router();
 
@@ -18,8 +17,7 @@ router.post('/anular-factura', openingHours, (req, res) => {
   newAnulacion
     .save()
     .then((anulado) => {
-      io.emit('cAnular', anulado);
-      res.send('Anulado Correctamente');
+      res.json(anulado);
     })
     .catch((error) => {
       console.error('Error al anular cliente:', error);

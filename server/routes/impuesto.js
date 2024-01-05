@@ -1,6 +1,5 @@
 import express from 'express';
 import modelImpuesto from '../models/impuesto.js';
-import { io } from '../../server.js';
 const router = express.Router();
 
 router.post('/update-impuesto', (req, res) => {
@@ -11,7 +10,6 @@ router.post('/update-impuesto', (req, res) => {
     // "new: true" devuelve el documento actualizado si se encontró
     .then((updatedImpuesto) => {
       if (updatedImpuesto) {
-        io.emit('cImpuesto', updatedImpuesto);
         res.json(updatedImpuesto);
       } else {
         res.status(404).json({ mensaje: 'No se encontró el impuesto para actualizar' });

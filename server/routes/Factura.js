@@ -472,7 +472,6 @@ router.put('/update-factura/:id', openingHours, async (req, res) => {
                 .save({ session: session })
                 .then(async (anulado) => {
                   // newAnulacion = anulado;
-                  // io.emit('cAnular', anulado);
 
                   if (orderUpdated.dni) {
                     // una vez anulado - eliminar puntaje de orden de servicio

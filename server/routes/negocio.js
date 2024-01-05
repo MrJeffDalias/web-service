@@ -1,5 +1,4 @@
 import express from 'express';
-import { io } from '../../server.js';
 import Negocio from '../models/negocio.js';
 
 const router = express.Router();
@@ -60,7 +59,6 @@ router.put('/update-info-negocio', async (req, res) => {
 
     // Guarda los cambios en la base de datos
     await negocio.save();
-    io.emit('cNegocio', negocio);
     return res.json(negocio);
   } catch (error) {
     // Manejo de errores

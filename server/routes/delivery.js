@@ -1,8 +1,6 @@
 import express from 'express';
 import Delivery from '../models/delivery.js';
 
-import { io } from '../../server.js';
-
 const router = express.Router();
 
 router.post('/add-delivery', (req, res) => {
@@ -20,7 +18,6 @@ router.post('/add-delivery', (req, res) => {
   newDelivery
     .save()
     .then((deliveryGuardado) => {
-      io.emit('cDelivery', deliveryGuardado);
       res.json(deliveryGuardado);
     })
     .catch((error) => {
@@ -73,7 +70,6 @@ router.put('/update-delivery/:idCliente', async (req, res) => {
     const updatedDelivery = await Delivery.findOneAndUpdate({ idCliente }, { $set: { name: newName } }, { new: true });
 
     if (updatedDelivery) {
-      io.emit('cDelivery', updatedDelivery);
       return res.json(updatedDelivery);
     } else {
       return res.status(404).json({ mensaje: 'No se encontró el documento' });
