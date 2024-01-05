@@ -96,6 +96,58 @@ io.on('connection', (socket) => {
     socket.broadcast.emit('server:changeCuadre:child', info);
   });
 
+  socket.on('client:onLogin', (info) => {
+    socket.broadcast.emit('server:onLogin', info);
+  });
+
+  socket.on('client:onFirtLogin', (info) => {
+    socket.broadcast.emit('server:onFirtLogin', info);
+  });
+
+  socket.on('client:onNewUser', (info) => {
+    socket.broadcast.emit('server:onNewUser', info);
+  });
+
+  socket.on('client:onChangeUser', (info) => {
+    socket.broadcast.emit('server:onChangeUser', info);
+  });
+
+  socket.on('client:onUpdateUser', (info) => {
+    socket.broadcast.emit('server:onUpdateUser', info);
+  });
+
+  socket.on('client:onDeleteUser', (info) => {
+    socket.broadcast.emit('server:onDeleteUser', info);
+  });
+
+  socket.on('client:onDeleteAccount', (info) => {
+    socket.broadcast.emit('server:onDeleteAccount', info);
+  });
+
+  socket.on('client:cPricePrendas', (info) => {
+    socket.broadcast.emit('server:cPricePrendas', info);
+  });
+
+  socket.on('client:cPromotions', (info) => {
+    socket.broadcast.emit('server:cPromotions', info);
+  });
+
+  socket.on('client:cPuntos', (info) => {
+    socket.broadcast.emit('server:cPuntos', info);
+  });
+
+  socket.on('client:cNegocio', (info) => {
+    socket.broadcast.emit('server:cNegocio', info);
+  });
+
+  socket.on('client:cGasto', (info) => {
+    socket.broadcast.emit('server:cGasto', info);
+  });
+
+  socket.on('client:cImpuesto', (info) => {
+    socket.broadcast.emit('server:cImpuesto', info);
+  });
+
   // Maneja el evento cuando un cliente se desconecta
   socket.on('disconnect', () => {
     console.log(`Un cliente se ha desconectado : ${socket.id}`);

@@ -2,6 +2,7 @@ import express from 'express';
 import Factura from '../models/Factura.js';
 import moment from 'moment';
 import 'moment-timezone';
+import { categoriasPrendas } from '../utils/varsGlobal.js';
 
 const router = express.Router();
 
@@ -33,7 +34,7 @@ function getWeeks(firstDayOfMonth, firstSundayOfMonth) {
 }
 async function getProductQuantities(query) {
   const productsData = {};
-  const categorias = ['Ropa x Kilo', 'Edredon', 'Planchado', 'Zapatillas', 'Cortinas', 'Otros'];
+  const categorias = categoriasPrendas;
 
   const facturasInRange = await Factura.find(query);
 

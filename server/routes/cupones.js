@@ -72,31 +72,41 @@ router.get('/validar-cupon/:codigoCupon', async (req, res) => {
     const cupon = await Cupones.findOne({ codigoCupon });
 
     if (!cupon) {
-      // Si el cupón no existe, devuelve un mensaje de error
       return res.status(200).json({ validacion: false, respuesta: 'Cupón inexistente' });
     }
 
-    if (cupon?.estado === false) {
-      // Si el estado del cupón es falso, verifica si ha sido usado
+    if (cupon.estado === false) {
       if (cupon.dateUse.fecha && cupon.dateUse.hora) {
-        // Si el cupón ha sido usado, devuelve un mensaje de error
         return res.status(200).json({
           validacion: false,
-          respuesta: `Cupón fue usado el : ${cupon.dateUse.fecha} - ${cupon.dateUse.hora}`,
+          respuesta: `Cupón fue usado el: ${cupon.dateUse.fecha} - ${cupon.dateUse.hora}`,
         });
       }
     }
 
-    // Si el cupón es válido
-    if (cupon?.estado === true) {
-      //busca la información de la promoción asociada
+    if (cupon.estado === true) {
       const promocion = await Promociones.findOne({ codigo: cupon.codigoPromocion });
 
       if (!promocion) {
-        // Si no se encuentra la promoción, devuelve un mensaje de error
         return res.status(200).json({ validacion: false, respuesta: 'Promoción no encontrada' });
       } else {
-        // Devuelve la información de la promoción junto con el mensaje de validación
+        // Obtén la fecha actual con Moment.js
+        const fechaActual = moment();
+
+        // Obtén la fecha de creación del cupón con Moment.js
+        const fechaCreacionCupon = moment(cupon.dateCreation.fecha);
+
+        // Suma los días de vigencia de la promoción a la fecha de creación del cupón
+        const fechaExpiracion = fechaCreacionCupon.clone().add(promocion.vigencia, 'days');
+
+        // Compara la fecha de expiración con la fecha actual
+        if (fechaActual.isSameOrAfter(fechaExpiracion)) {
+          return res.status(200).json({
+            validacion: false,
+            respuesta: `Cupón caducó - la fecha de expiración fue el ${fechaExpiracion.format('YYYY-MM-DD')}`,
+          });
+        }
+
         return res.status(200).json({
           validacion: true,
           respuesta: 'Cupón disponible',
@@ -104,7 +114,8 @@ router.get('/validar-cupon/:codigoCupon', async (req, res) => {
             codigo: promocion.codigo,
             prenda: promocion.prenda,
             cantidadMin: promocion.cantidadMin,
-            tipo: promocion.tipo,
+            tipoPromocion: promocion.tipoPromocion,
+            tipoDescuento: promocion.tipoDescuento,
             descripcion: promocion.descripcion,
             descuento: promocion.descuento,
           },
@@ -167,6 +178,7 @@ router.get('/get-info-promo/:codigoCupon', async (req, res) => {
       descripcion: promocion.descripcion,
       descuento: promocion.descuento,
       dateCreation: cupon.dateCreation,
+      vigencia: promocion.vigencia,
     };
 
     // Envía la respuesta con los datos combinados

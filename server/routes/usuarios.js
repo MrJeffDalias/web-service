@@ -1,7 +1,6 @@
 import express from 'express';
 import bcrypt from 'bcrypt';
 import nodemailer from 'nodemailer';
-import { io } from '../../server.js';
 import jwt from 'jsonwebtoken';
 import Usuario from '../models/usuarios/usuarios.js';
 import Accesos from '../models/usuarios/accesos.js';
@@ -230,7 +229,6 @@ router.post('/login', async (req, res) => {
     });
 
     await nuevoAcceso.save();
-    io.emit('onLogin', user._id);
     res.json({ type: 'token', info: token });
   } catch (error) {
     console.error('Error al autenticar el usuario:', error);
@@ -287,8 +285,10 @@ router.post('/first-login', async (req, res) => {
     await Usuario.updateOne({ _id: user._id }, { $set: { _validate: true } });
     // Busca y elimina cualquier registro en Verify con el mismo id
     await UserRegistroCodes.deleteMany({ idUser: user?._id });
-    io.emit('onFirtLogin', user._id);
-    res.json(token);
+    res.json({
+      token,
+      id: user._id,
+    });
   } catch (error) {
     console.error('Error al autenticar el usuario:', error);
     res.status(500).json({ mensaje: 'Error al autenticar el usuario' });
@@ -320,7 +320,6 @@ router.post('/register', checkUniqueFields, async (req, res) => {
 
     // Una vez que se ha validado el registro, genera un código aleatorio
     await _CodFirstRegistro(usuarioGuardado);
-    io.emit('onNewUser', usuarioGuardado);
     res.json(usuarioGuardado);
   } catch (error) {
     console.error('Error al registrar el usuario:', error);
@@ -358,9 +357,6 @@ router.put('/edit-user/:id', async (req, res) => {
 
     // Guarda los cambios en la base de datos
     const updatedUser = await existingUser.save();
-
-    io.emit('onChangeUser', id);
-    io.emit('onUpdateUser', updatedUser);
     res.json(updatedUser);
   } catch (error) {
     console.error('Error al editar el usuario:', error);
@@ -394,7 +390,6 @@ router.put('/recover-password/:id', verifyCodigo, async (req, res) => {
     if (updatedUser) {
       // Elimina el documento de Verify con el código proporcionado
       await PasswordResetCodes.findOneAndRemove({ codigo });
-      io.emit('onChangeUser', id);
       res.json(updatedUser);
     } else {
       res.status(500).json({ mensaje: 'Error al guardar los cambios del usuario' });
@@ -449,11 +444,7 @@ router.delete('/delete-user/:id', async (req, res) => {
 
     // Elimina el usuario de la base de datos
     await Usuario.findByIdAndRemove(userId);
-    // Mensaje de Administrador (para quitar del estado)
-    io.emit('onDeleteUser', userId);
-    // Mensaje para Usuario (para sacarlo)
-    io.emit('onDeleteAccount', userId);
-    res.json({ mensaje: 'Usuario eliminado con éxito' });
+    res.json(userId);
   } catch (error) {
     console.error('Error al eliminar el usuario:', error);
     res.status(500).json({ mensaje: 'Error al eliminar el usuario' });
