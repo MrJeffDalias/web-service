@@ -203,7 +203,7 @@ router.post('/login', async (req, res) => {
     }
 
     if (user._validate === false) {
-      return res.status(200).json({ type: 'validate', info: user._id });
+      return res.status(200).json({ type: 'validate', info: user._id, id: user._id });
     }
 
     // Genera un JWT con la información del usuario
@@ -229,7 +229,7 @@ router.post('/login', async (req, res) => {
     });
 
     await nuevoAcceso.save();
-    res.json({ type: 'token', info: token });
+    res.json({ type: 'token', info: token, id: user._id });
   } catch (error) {
     console.error('Error al autenticar el usuario:', error);
     res.status(500).json({ mensaje: 'Error al autenticar el usuario' });
