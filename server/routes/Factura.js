@@ -10,6 +10,7 @@ import moment from 'moment';
 import Almacen from '../models/almacen.js';
 import Anular from '../models/anular.js';
 import Donacion from '../models/donacion.js';
+import { reportePrendas } from '../utils/varsGlobal.js';
 
 const router = express.Router();
 
@@ -61,10 +62,9 @@ router.post('/add-factura', openingHours, async (req, res) => {
       Producto,
       celular,
       Pago,
-      datePago,
+      ListPago,
       datePrevista,
       dateEntrega,
-      metodoPago,
       descuento,
       estadoPrenda,
       estado,
@@ -114,14 +114,13 @@ router.post('/add-factura', openingHours, async (req, res) => {
       Producto,
       celular,
       Pago,
-      datePago,
+      ListPago,
       datePrevista,
       dateEntrega,
-      metodoPago,
       descuento,
       estadoPrenda,
       estado,
-      index: nuevoIndice, // Asignar el nuevo índice al registro
+      index: nuevoIndice,
       dni,
       subTotal,
       totalNeto,
@@ -253,9 +252,14 @@ router.get('/get-factura', (req, res) => {
 router.get('/get-factura/date/:datePago', (req, res) => {
   const { datePago } = req.params;
 
-  Factura.find({ 'datePago.fecha': datePago })
-    .then((deliverys) => {
-      res.json(deliverys);
+  Factura.find({ 'ListPago.date.fecha': datePago })
+    .then((facturas) => {
+      // Filtrar y mapear los resultados para incluir sólo los documentos que coincidan en la fecha de pago.
+      const facturasConPagoCorrespondiente = facturas.filter((factura) =>
+        factura.ListPago.some((pago) => pago.date.fecha === datePago)
+      );
+
+      res.json(facturasConPagoCorrespondiente);
     })
     .catch((error) => {
       console.error('Error al obtener los datos:', error);
@@ -354,7 +358,6 @@ router.post('/get-report/date-prevista/:type', async (req, res) => {
     const { type } = req.params;
     const filter = req.body;
     const datesArray = generateDateArray(type, filter);
-
     const infoReporte = [];
 
     for (const datePrevista of datesArray) {
@@ -366,62 +369,32 @@ router.post('/get-report/date-prevista/:type', async (req, res) => {
       const resultado = {
         FechaPrevista: datePrevista,
         CantidadPedido: facturas.length,
-        InfoCategoria: facturas.reduce((categorias, factura) => {
-          factura.Producto.forEach(({ categoria, cantidad }) => {
-            categorias[categoria] = (categorias[categoria] || 0) + Number(cantidad);
+        InfoProducto: facturas.reduce((productos, factura) => {
+          factura.Producto.forEach(({ producto, cantidad }) => {
+            if (reportePrendas.includes(producto)) {
+              productos[producto] = (productos[producto] || 0) + Number(cantidad);
+            }
           });
-          return categorias;
+          return productos;
         }, {}),
       };
 
-      resultado.InfoCategoria = Object.entries(resultado.InfoCategoria).map(([Categoria, Cantidad]) => ({
-        Categoria,
+      resultado.InfoProducto = Object.entries(resultado.InfoProducto).map(([Producto, Cantidad]) => ({
+        Producto,
         Cantidad,
       }));
 
-      resultado.InfoCategoria.unshift({
-        Categoria: 'Delivery',
-        Cantidad: resultado.InfoCategoria.find(({ Categoria }) => Categoria === 'Delivery')?.Cantidad || 0,
+      // Asegurarse de que todos los productos deseados estén representados
+      reportePrendas.forEach((producto) => {
+        if (!resultado.InfoProducto.some((p) => p.Producto === producto)) {
+          resultado.InfoProducto.push({ Producto: producto, Cantidad: 0 });
+        }
       });
 
       infoReporte.push(resultado);
     }
 
-    const formattedResponse = infoReporte.map((dayData) => {
-      const categories = ['Ropa x Kilo', 'Edredon', 'Planchado', 'Zapatillas', 'Cortinas', 'Otros', 'Delivery'];
-
-      const dayDataWithEmptyCategories = categories.map((category) => {
-        const foundItem = dayData.InfoCategoria.find((item) => item.Categoria === category);
-        if (foundItem) {
-          return {
-            Categoria: foundItem.Categoria,
-            Cantidad: parseFloat(foundItem.Cantidad) || 0,
-          };
-        } else {
-          return { Categoria: category, Cantidad: 0 };
-        }
-      });
-
-      return {
-        FechaEntrega: dayData.FechaPrevista,
-        CantidadPedido: dayData.CantidadPedido,
-        InfoCategoria: dayDataWithEmptyCategories,
-      };
-    });
-
-    const hasOtros = formattedResponse.some((dayData) =>
-      dayData.InfoCategoria.some((item) => item.Categoria === 'Otros')
-    );
-
-    if (!hasOtros) {
-      formattedResponse.forEach((dayData) => {
-        dayData.InfoCategoria.push({ Categoria: 'Otros', Cantidad: 0 });
-      });
-    }
-
-    formattedResponse.sort((a, b) => moment(a.FechaEntrega).diff(moment(b.FechaEntrega)));
-
-    res.json(formattedResponse);
+    res.json(infoReporte);
   } catch (error) {
     console.error('Error al obtener los datos:', error);
     res.status(500).json({ mensaje: 'Error al obtener los datos' });

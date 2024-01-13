@@ -1,6 +1,5 @@
 export const secretKey = 'tu_clave_secreta';
 export const timeZone = 'America/Mexico_City';
-
 export const categoriasPrendas = ['Ropa x Kilo', 'Edredon', 'Toallas', 'Zapatillas', 'Cortinas', 'Otros'];
 
 export const prendasPorDefecto = [
@@ -24,7 +23,6 @@ export const prendasPorDefecto = [
     name: 'Tenis', // Zapatillas
     price: '9',
   },
-  //////////////////////////
   {
     name: 'Lavado a Mano',
     price: '9',
@@ -49,7 +47,6 @@ export const prendasPorDefecto = [
     name: 'Peluche',
     price: '9',
   },
-  //////////////////////////
   {
     name: 'Playera', // Polo
     price: '4',
@@ -94,10 +91,6 @@ export const prendasPorDefecto = [
     name: 'Frazada',
     price: '18',
   },
-  //   {
-  //     name: 'Alfombra',
-  //     price: '25',
-  //   },
   {
     name: 'Edredon',
     price: '10',
@@ -114,7 +107,6 @@ export const prendasPorDefecto = [
     name: 'Tapete',
     price: '10',
   },
-  //////////////////////////
   {
     name: 'Planchado',
     price: '',
@@ -155,5 +147,4 @@ export const prendasPorDefecto = [
     name: 'Paletas',
     price: '',
   },
-  //////////////////////////
 ];
