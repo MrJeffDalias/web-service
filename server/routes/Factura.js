@@ -552,7 +552,7 @@ router.put('/update-factura/:id', openingHours, async (req, res) => {
             }
 
             if (
-              orderUpdated.Pago === 'Pagado' &&
+              orderUpdated.Pago === 'Completo' &&
               orderUpdated.estadoPrenda === 'entregado' &&
               orderUpdated.dni !== ''
             ) {

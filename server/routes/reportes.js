@@ -3,6 +3,7 @@ import Factura from '../models/Factura.js';
 import moment from 'moment';
 import 'moment-timezone';
 import { reportePrendas } from '../utils/varsGlobal.js';
+import Gasto from '../models/gastos.js';
 
 const router = express.Router();
 
@@ -175,13 +176,41 @@ router.get('/get-reporte-pendientes', async (req, res) => {
     // Filtrar las facturas que cumplen con la diferencia de días
     const facturasPendientes = facturas.filter((factura) => {
       const dDifference = dayDifference(factura.dateRecepcion.fecha, fechaActual);
-      return dDifference > 7;
+      return dDifference > -1;
     });
 
     res.json(facturasPendientes);
   } catch (error) {
     console.error(error);
     res.status(500).json({ mensaje: 'No se pudo obtener lista de ordenes pendientes' });
+  }
+});
+
+router.get('/get-reporte-gasto', async (req, res) => {
+  const { mes, anio } = req.query;
+
+  // Validar que los parámetros mes y anio sean válidos
+  if (!mes || !anio) {
+    return res.status(400).json({ mensaje: 'Los parámetros mes y año son requeridos.' });
+  }
+
+  try {
+    // Construir fechas de inicio y fin del mes
+    const fechaInicial = moment(`${anio}-${mes}-01`, 'YYYY-MM');
+    const fechaFinal = fechaInicial.clone().endOf('month');
+
+    // Consultar facturas en ese rango de fechas y con estadoPrenda no anulado
+    const gastos = await Gasto.find({
+      fecha: {
+        $gte: fechaInicial.format('YYYY-MM-DD'),
+        $lte: fechaFinal.format('YYYY-MM-DD'),
+      },
+    });
+
+    res.json([...gastos]);
+  } catch (error) {
+    console.error(error);
+    res.status(500).json({ mensaje: 'No se pudo Generar reporte EXCEL' });
   }
 });
 
