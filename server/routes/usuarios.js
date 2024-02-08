@@ -12,8 +12,8 @@ import { secretKey } from '../utils/varsGlobal.js';
 const transporter = nodemailer.createTransport({
   service: 'Gmail',
   auth: {
-    user: 'jose.poma1001g@gmail.com',
-    pass: 'lmmspgkfbowlxgzb',
+    user: 'angelicacardenasterrones@gmail.com',
+    pass: 'spvyjtutnbolzbpl',
   },
 });
 
@@ -106,7 +106,6 @@ const router = express.Router();
 router.post('/send-cod-reset-password', async (req, res) => {
   try {
     const { txtInfo, filtro } = req.body;
-    console.log(req.body);
 
     if (!txtInfo || !filtro) {
       return res.status(400).send('Falta Enviar Datos');
@@ -448,6 +447,22 @@ router.delete('/delete-user/:id', async (req, res) => {
   } catch (error) {
     console.error('Error al eliminar el usuario:', error);
     res.status(500).json({ mensaje: 'Error al eliminar el usuario' });
+  }
+});
+
+router.get('/get-user/:id', async (req, res) => {
+  try {
+    const userId = req.params.id;
+    const user = await Usuario.findById(userId);
+
+    if (user) {
+      res.json(user);
+    } else {
+      res.status(404).json({ mensaje: 'Usuario no encontrado' });
+    }
+  } catch (error) {
+    console.error('Error al obtener la información del usuario:', error);
+    res.status(500).json({ mensaje: 'Error al obtener la información del usuario' });
   }
 });
 

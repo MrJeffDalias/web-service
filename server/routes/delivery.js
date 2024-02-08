@@ -4,7 +4,7 @@ import Delivery from '../models/delivery.js';
 const router = express.Router();
 
 router.post('/add-delivery', (req, res) => {
-  const { idCliente, name, descripcion, fecha, hora, monto } = req.body;
+  const { idCliente, name, descripcion, fecha, hora, monto, idUser, idCuadre } = req.body;
 
   const newDelivery = new Delivery({
     idCliente,
@@ -13,6 +13,8 @@ router.post('/add-delivery', (req, res) => {
     fecha,
     hora,
     monto,
+    idUser,
+    idCuadre,
   });
 
   newDelivery

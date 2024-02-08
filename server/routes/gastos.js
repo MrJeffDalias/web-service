@@ -5,13 +5,15 @@ const router = express.Router();
 
 router.post('/add-gasto', openingHours, (req, res) => {
   const { infoGasto } = req.body;
-  const { descripcion, fecha, hora, monto } = infoGasto;
+  const { descripcion, fecha, hora, monto, idUser, idCuadre } = infoGasto;
 
   const newGasto = new Gasto({
     descripcion,
     fecha,
     hora,
     monto,
+    idUser,
+    idCuadre,
   });
 
   newGasto

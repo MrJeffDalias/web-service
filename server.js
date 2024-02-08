@@ -92,7 +92,7 @@ io.on('connection', (socket) => {
   });
 
   socket.on('client:changeCuadre', (info) => {
-    socket.broadcast.emit('server:changeCuadre', info);
+    io.emit('server:changeCuadre', info);
     socket.broadcast.emit('server:changeCuadre:child', info);
   });
 

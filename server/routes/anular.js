@@ -5,13 +5,14 @@ const router = express.Router();
 
 router.post('/anular-factura', openingHours, (req, res) => {
   const { infoAnulacion } = req.body;
-  const { _id, motivo, fecha, hora } = infoAnulacion;
+  const { _id, motivo, fecha, hora, idUser } = infoAnulacion;
 
   const newAnulacion = new Anular({
     _id,
     motivo,
     fecha,
     hora,
+    idUser,
   });
 
   newAnulacion

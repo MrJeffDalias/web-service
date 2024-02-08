@@ -25,7 +25,6 @@ router.post('/add-promocion', async (req, res) => {
   try {
     const { prenda, cantidadMin, tipoDescuento, tipoPromocion, descripcion, descuento, vigencia } = req.body;
 
-    console.log(req.body);
     if (!prenda || !tipoDescuento || !tipoPromocion || !descripcion || !descuento || !vigencia) {
       return res.status(400).json({ mensaje: 'Todos los campos son requeridos.' });
     }

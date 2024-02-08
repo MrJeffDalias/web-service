@@ -155,8 +155,6 @@ router.get('/use-cupon/:codigoCupon', async (req, res) => {
 router.get('/get-info-promo/:codigoCupon', async (req, res) => {
   const codigoCupon = req.params.codigoCupon;
 
-  console.log(codigoCupon);
-
   try {
     // Busca el cupón por su código
     const cupon = await Cupones.findOne({ codigoCupon }).exec();

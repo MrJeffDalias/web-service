@@ -6,6 +6,8 @@ const gastoSchema = new mongoose.Schema(
     fecha: String,
     hora: String,
     monto: String,
+    idUser: String,
+    idCuadre: String,
   },
   { collection: 'Gastos' }
 );
