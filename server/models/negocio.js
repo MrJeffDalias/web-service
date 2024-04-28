@@ -1,4 +1,4 @@
-import mongoose from 'mongoose';
+import mongoose from "mongoose";
 
 const NegocioSchema = new mongoose.Schema(
   {
@@ -9,6 +9,9 @@ const NegocioSchema = new mongoose.Schema(
       state: Boolean,
     },
     estado: Boolean,
+    itemsAtajos: Array,
+    itemsInformeDiario: [],
+    rolQAnulan: ["gerente", "admin", "coord"],
     horario: {
       dias: [],
       horas: {
@@ -17,9 +20,9 @@ const NegocioSchema = new mongoose.Schema(
       },
     },
   },
-  { collection: 'Negocio' }
+  { collection: "Negocio" }
 );
 
-const Negocio = mongoose.model('Negocio', NegocioSchema);
+const Negocio = mongoose.model("Negocio", NegocioSchema);
 
 export default Negocio;

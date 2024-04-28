@@ -1,4 +1,4 @@
-import mongoose from 'mongoose';
+import mongoose from "mongoose";
 
 const facturaSchema = new mongoose.Schema({
   dateCreation: {
@@ -6,27 +6,28 @@ const facturaSchema = new mongoose.Schema({
     hora: String,
   },
   codRecibo: String,
-  dateRecepcion: {},
+  dateRecepcion: {
+    fecha: String,
+    hora: String,
+  },
   Modalidad: String,
   Nombre: String,
-  Producto: [],
-  celular: String,
-  Pago: String,
-  ListPago: [
+  Items: [
     {
-      date: {
-        fecha: String,
-        hora: String,
-      },
-      metodoPago: String,
-      total: Number,
-      idUser: String,
-      idCuadre: String,
+      identificador: String,
+      tipo: String,
+      item: String,
+      simboloMedida: String,
+      cantidad: Number,
+      descripcion: String,
+      precio: String,
+      total: String,
     },
   ],
+  celular: String,
+  direccion: String,
   datePrevista: {},
   dateEntrega: {},
-  metodoPago: String,
   descuento: String,
   estadoPrenda: String,
   estado: String,
@@ -50,6 +51,6 @@ const facturaSchema = new mongoose.Schema({
   typeRegistro: String,
 });
 
-const Factura = mongoose.model('Factura', facturaSchema);
+const Factura = mongoose.model("Factura", facturaSchema);
 
 export default Factura;

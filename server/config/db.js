@@ -1,17 +1,17 @@
-import mongoose from 'mongoose';
+import mongoose from "mongoose";
 
 export const connectDB = async () => {
   try {
     await mongoose.connect(
-      'mongodb+srv://lavart2023:UHEg6BzZS5emBcD2@sistemalavander.gxrj5rk.mongodb.net/db-laundry-system?retryWrites=true&w=majority',
+      "mongodb+srv://rapiwash:6FbQkhpF5m9hiUnL@sistemalavanderia.6uoe00l.mongodb.net/db-rapi-wash?retryWrites=true&w=majority",
       {
         useNewUrlParser: true,
         useUnifiedTopology: true,
       }
     );
-    console.log('Conexión exitosa a MongoDB');
+    console.log("Conexión exitosa a MongoDB");
   } catch (error) {
-    console.error('Error al conectar a MongoDB:', error);
+    console.error("Error al conectar a MongoDB:", error);
     process.exit(1); // Terminar el proceso con error
   }
 };
