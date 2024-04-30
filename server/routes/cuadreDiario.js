@@ -297,8 +297,10 @@ router.get("/get-cuadre/:idUsuario/:datePrincipal", async (req, res) => {
     }).lean();
 
     listCuadres = await obtenerInformacionDetallada(listCuadres);
-    lastCuadre = await obtenerInformacionDetallada([lastCuadre]);
-    lastCuadre = lastCuadre.length === 1 ? lastCuadre[0] : null;
+    lastCuadre =
+      lastCuadre !== null
+        ? await obtenerInformacionDetallada([lastCuadre])[0]
+        : lastCuadre;
 
     const dPrincipal = moment(datePrincipal, "YYYY-MM-DD");
 
