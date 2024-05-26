@@ -4,21 +4,30 @@ const NegocioSchema = new mongoose.Schema(
   {
     name: String,
     direccion: String,
-    numero: {
-      info: String,
-      state: Boolean,
-    },
-    estado: Boolean,
+    contacto: [
+      {
+        numero: String,
+        index: Number,
+      },
+    ],
     itemsAtajos: Array,
-    itemsInformeDiario: [],
-    rolQAnulan: ["gerente", "admin", "coord"],
-    horario: {
-      dias: [],
+    itemsInformeDiario: Array,
+    rolQAnulan: Array,
+    funcionamiento: {
       horas: {
         inicio: String,
         fin: String,
       },
+      actividad: Boolean,
     },
+    horario: [
+      {
+        horario: String,
+        index: Number,
+      },
+    ],
+    oldOrder: Boolean,
+    hasMobility: Boolean,
   },
   { collection: "Negocio" }
 );
